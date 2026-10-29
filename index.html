@@ -57,6 +57,12 @@
   footer{margin-top:56px;padding-top:18px;border-top:2px dashed var(--line);font-size:14.5px;color:var(--muted)}
   a{color:var(--blue)}
 </style>
+<script>
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+function toTop(){ if (!location.hash) window.scrollTo(0,0); }
+window.addEventListener("pageshow", toTop);
+window.addEventListener("load", function(){ toTop(); setTimeout(toTop, 50); });
+</script>
 </head>
 <body>
 <div class="wrap">

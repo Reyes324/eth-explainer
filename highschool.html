@@ -44,6 +44,12 @@
   a{color:var(--blue)}
   code{background:#efe8d8;padding:1px 6px;border-radius:5px;font-size:.92em}
 </style>
+<script>
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+function toTop(){ if (!location.hash) window.scrollTo(0,0); }
+window.addEventListener("pageshow", toTop);
+window.addEventListener("load", function(){ toTop(); setTimeout(toTop, 50); });
+</script>
 </head>
 <body>
 <div class="wrap">
