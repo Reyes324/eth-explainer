@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 推翻了"指数时间猜想"？给高中生的 5 分钟解释</title>
+<meta name="description" content="用拼图、开关和马拉松，讲清楚 OpenAI 宣布推翻 ETH 是怎么回事。">
+<style>
+  :root{
+    --bg:#f7f3ea; --ink:#1d1b16; --muted:#6b6457; --card:#fffdf7;
+    --accent:#e4572e; --blue:#2f6fdf; --green:#2a9d6f; --line:#e6dfcf;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif;
+    line-height:1.8;font-size:17px}
+  .wrap{max-width:720px;margin:0 auto;padding:48px 22px 80px}
+  .tag{display:inline-block;font-size:13px;letter-spacing:.08em;color:var(--accent);
+    border:1.5px solid var(--accent);border-radius:999px;padding:2px 12px;font-weight:600}
+  h1{font-size:34px;line-height:1.3;margin:18px 0 10px;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:0 0 36px}
+  h2{font-size:23px;margin:56px 0 14px;display:flex;gap:12px;align-items:center}
+  h2 .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--bg);
+    display:grid;place-items:center;font-size:16px}
+  p{margin:12px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:18px 0;
+    box-shadow:0 1px 0 rgba(0,0,0,.03)}
+  .tldr{border-left:6px solid var(--accent)}
+  .tldr b{color:var(--accent)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.two{grid-template-columns:1fr} h1{font-size:28px}}
+  .emoji{font-size:30px;line-height:1}
+  .k{font-weight:700}
+  .blue{color:var(--blue)} .green{color:var(--green)} .red{color:var(--accent)}
+  table{width:100%;border-collapse:collapse;font-size:15.5px}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:14px}
+  .bar{height:14px;border-radius:7px;margin:6px 0 2px}
+  .race{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;align-items:center;font-size:15px}
+  .note{font-size:14.5px;color:var(--muted)}
+  .myth td:first-child{width:46%}
+  .ok{color:var(--green);font-weight:700} .no{color:var(--accent);font-weight:700}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+  a{color:var(--blue)}
+  code{background:#efe8d8;padding:1px 6px;border-radius:5px;font-size:.92em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<span class="tag">科普 · 2026.10</span>
+<h1>AI 推翻了"指数时间猜想"？<br>给高中生的 5 分钟解释</h1>
+<p class="sub">不用会编程，也不用懂高数，会算 2 的几次方就够了。 · <a href="./">👉 更简单的小学五年级版</a></p>
+
+<div class="card tldr">
+  <p><b>一句话：</b>有一类题，计算机科学家认定"无论用什么方法，都只能慢慢算，越大越慢，慢得要命"，并且把这个判断当作前提用了 30 年。2026 年 10 月，OpenAI 宣布它的 AI 证明了：<b>其实能比"要命地慢"快一点点。</b></p>
+  <p style="margin-bottom:0">只快了一点点，现实中马上不会变；但一条大家默认成立的规矩被推翻了，所以很轰动。</p>
+</div>
+
+<h2><span class="n">1</span>先分清两种题：好做的和好查的</h2>
+<div class="two">
+  <div class="card">
+    <div class="emoji">🃏</div>
+    <p class="k blue">好做的题（叫 P）</p>
+    <p>给一副扑克牌排序。牌多了，花的时间也只是多一点，电脑一下就做完。</p>
+  </div>
+  <div class="card">
+    <div class="emoji">🧩</div>
+    <p class="k red">好查的题（叫 NP）</p>
+    <p>一万片的纯白拼图。自己拼可能要几年，但别人拼好了，你扫一眼就知道对不对。</p>
+  </div>
+</div>
+<p>数学界最有名的难题之一 <b>"P = NP 吗？"</b> 问的就是：<b>好查的题，是不是其实都有没被发现的捷径，也能很快做出来？</b>大多数人相信"没有"，但没人能证明。</p>
+
+<h2><span class="n">2</span>难题之王：一排开关</h2>
+<div class="card">
+  <p>想象你面前有 <b>n 个开关</b>，每个只能开或关。墙上贴着一大堆要求，比如：</p>
+  <p style="text-align:center">"1 号开 <b>或</b> 5 号关 <b>或</b> 9 号开，至少满足一个"</p>
+  <p>每条要求只涉及 3 个开关。问题是：<b>有没有一种开关组合，能让墙上所有要求都满足？</b></p>
+  <p style="margin-bottom:0">这就是著名的 <code>3-SAT</code> 问题。它是"难题之王"：只要能快速解决它，所有好查的题都能快速解决。</p>
+</div>
+<p>最笨的办法是把每种组合都试一遍。每个开关 2 种状态，n 个开关就是 <b>2ⁿ</b> 种组合：</p>
+<div class="card">
+<table>
+  <tr><th>开关数 n</th><th>要试的组合 2ⁿ</th><th>大概多大</th></tr>
+  <tr><td>10</td><td>1,024</td><td>一眨眼</td></tr>
+  <tr><td>50</td><td>约 10<sup>15</sup></td><td>普通电脑要算好几天</td></tr>
+  <tr><td>100</td><td>约 10<sup>30</sup></td><td>超级计算机算到宇宙末日也算不完</td></tr>
+</table>
+</div>
+<p>这种"n 每加 1，时间就翻一倍"的增长，叫<b>指数增长</b>。几十年来，人类想了很多聪明办法（比如试到一半发现走不通就提前放弃），能把 2ⁿ 压到大约 1.3ⁿ，但<b>本质上还是指数</b>：n 每多几个，时间照样翻倍。</p>
+
+<h2><span class="n">3</span>ETH 是什么：一条"别做梦了"的猜想</h2>
+<p>1999 年前后，三位科学家（Impagliazzo、Paturi、Zane）提出了<b>指数时间猜想（ETH）</b>：</p>
+<div class="card tldr">
+  <p style="margin:0">解决"开关难题"，<b>不管多聪明的方法，都逃不出指数增长</b>。你可以把底数从 2 压到 1.3、压到 1.01，但永远压不到"不再是指数"。</p>
+</div>
+<p>用跑马拉松打个比方：</p>
+<div class="card">
+  <div class="race">
+    <span>P≠NP 说</span><div><div class="bar" style="width:100%;background:#d9d1bf"></div><span class="note">人类不可能 10 秒跑完马拉松（没有超级捷径）</span></div>
+    <span>ETH 说得更狠</span><div><div class="bar" style="width:100%;background:var(--ink)"></div><span class="note">连 1 小时都跑不进，极限死死卡在 2 小时左右</span></div>
+  </div>
+</div>
+<p><b>为什么它重要？</b>P≠NP 一直证明不了，科学家写论文时就默认 ETH 是对的，拿它当地基："假设 ETH 成立，那我研究的这个问题就不可能再算快了。"图论、基因研究、数据库……<b>好几百篇论文</b>都这样用过它。</p>
+
+<h2><span class="n">4</span>这次发生了什么</h2>
+<div class="card">
+  <p>2026 年 10 月 16 日，OpenAI 内部的 AI 写出了一份证明：<b>开关难题存在比指数更快的解法</b>，专业说法叫"亚指数时间"。第二天，证明又被转成 <b>Lean</b>，让电脑逐行检查，结果没有发现错误。</p>
+  <p style="margin-bottom:0">10 月 26 日，OpenAI 公开了证明。负责审查的人里，有两位正是<b>当年提出 ETH 的科学家本人</b>。</p>
+</div>
+<p>打个比方：原来大家认定"翻抽屉找钥匙，抽屉越多，要翻的比例永远至少是一个固定的数"；现在 AI 证明了，<b>抽屉多到一定程度以后，要翻的比例会慢慢变小</b>。</p>
+
+<h2><span class="n">5</span>别被标题党带偏</h2>
+<div class="card">
+<table class="myth">
+  <tr><th>网上的说法</th><th>真实情况</th></tr>
+  <tr><td>"AI 证明了 P = NP"</td><td><span class="no">✗ 没有。</span>推翻 ETH 只说明"比 2 小时快"，没说能"10 秒跑完"。P vs NP 依然没有答案。</td></tr>
+  <tr><td>"密码学要崩了，银行不安全了"</td><td><span class="no">✗ 没有。</span>新方法只快了"一点点"，现实规模下基本看不出差别；常见的加密（比如 RSA）靠的也不是这道题难。</td></tr>
+  <tr><td>"几百篇论文全部作废"</td><td><span class="no">✗ 说过头了。</span>作废的只是"不可能更快"这类结论，现在变回"不知道还能快多少"。OpenAI 原文也说，要找到真正更快的算法还需要大量研究。</td></tr>
+  <tr><td>"AI 推翻了一个 30 年的重要猜想"</td><td><span class="ok">✓ 这是 OpenAI 官方的说法，</span>而且有电脑验证，可信度比较高。但它仍在同行公开审查中，还不算"学界定论"。</td></tr>
+</table>
+</div>
+
+<h2><span class="n">6</span>那它到底意味着什么？</h2>
+<div class="card">
+  <p>① <b>人类的直觉错了一次。</b>几代顶尖科学家都相信的事被推翻，说明"算得快"和"算得慢"之间的界线，比我们以为的更模糊。</p>
+  <p>② <b>AI 开始做真正的数学研究。</b>同一篇公告里，OpenAI 还宣布 AI 证明了一个调和分析的猜想，以及一个物理学千禧年难题的一部分。</p>
+  <p style="margin-bottom:0">③ <b>科学界要面对新问题：</b>AI 做出来的成果，谁来审查？算谁的功劳？OpenAI 表示不要署名，会把材料交给学者公开审查。</p>
+</div>
+
+<footer>
+  <p><b>资料来源</b></p>
+  <p>· OpenAI 官方公告《携手学术界，深化科学认知》（2026-10-26）：<a href="https://openai.com/index/building-scientific-understanding-with-academic-communities/" target="_blank" rel="noopener">openai.com/index/building-scientific-understanding-with-academic-communities</a></p>
+  <p>· 知乎讨论《如何看待 ETH（指数时间猜想）猜想被 OpenAI 证伪？》：<a href="https://www.zhihu.com/question/2098291700204622696" target="_blank" rel="noopener">zhihu.com/question/2098291700204622696</a></p>
+  <p>说明：本页是科普，比喻都做了简化。"1.3ⁿ"是现有算法的大致水平。新算法具体快多少，以 OpenAI 公开的证明文稿为准。</p>
+</footer>
+
+</div>
+</body>
+</html>
